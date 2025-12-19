@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+langchain
+langchain-core
+langchain-google-genai
+langchain-groq
+transformers
+openai-whisper
+ffmpeg-python
+python-multipart

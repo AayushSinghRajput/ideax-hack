@@ -1,0 +1,12 @@
+.env 
+_pycache_/
+*.pyc
+.venv/
+env/
+.idea/
+.vscode/
+.DS_Store
+instance/
+coverage
+data
+
