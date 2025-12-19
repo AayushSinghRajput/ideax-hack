@@ -66,7 +66,7 @@ const Toast = ({ visible, message, onHide }) => {
   );
 };
 
-export default function MachineForm({ visible, onClose, onSubmit }) {
+export default function MachineForm({ visible, onClose, onSubmit, aiDraft }) {
   const [toolName, setToolName] = useState("");
   const [category, setCategory] = useState("Tractor");
   const [rentalPrice, setRentalPrice] = useState("");
@@ -81,6 +81,33 @@ export default function MachineForm({ visible, onClose, onSubmit }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showFromDatePicker, setShowFromDatePicker] = useState(false);
   const [showToDatePicker, setShowToDatePicker] = useState(false);
+
+  /**
+   * ✅ AUTO-FILL FROM AI WHEN DATA ARRIVES
+   * Will not overwrite user-typed values
+   */
+  useEffect(() => {
+    if (!aiDraft) return;
+
+    if (!toolName && aiDraft.toolName) setToolName(aiDraft.toolName);
+    if (aiDraft.category) setCategory(aiDraft.category);
+    if (!rentalPrice && aiDraft.rentalPrice)
+      setRentalPrice(String(aiDraft.rentalPrice));
+    if (!location && aiDraft.location) setLocation(aiDraft.location);
+    if (!description && aiDraft.description)
+      setDescription(aiDraft.description);
+
+    if (aiDraft.pickup !== undefined) setPickup(aiDraft.pickup);
+    if (aiDraft.delivery !== undefined) setDelivery(aiDraft.delivery);
+
+    if (aiDraft.availabilityFrom)
+      setAvailabilityFrom(new Date(aiDraft.availabilityFrom));
+
+    if (aiDraft.availabilityTo)
+      setAvailabilityTo(new Date(aiDraft.availabilityTo));
+
+    if (aiDraft.imageUri) setImage(aiDraft.imageUri);
+  }, [aiDraft]);
 
   useEffect(() => {
     if (!visible) {
@@ -138,7 +165,7 @@ export default function MachineForm({ visible, onClose, onSubmit }) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.7,
     });
-    if (!result.cancelled && result.assets && result.assets.length > 0) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
     }
   };
@@ -155,7 +182,7 @@ export default function MachineForm({ visible, onClose, onSubmit }) {
     let result = await ImagePicker.launchCameraAsync({
       quality: 0.7,
     });
-    if (!result.cancelled && result.assets && result.assets.length > 0) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
     }
   };

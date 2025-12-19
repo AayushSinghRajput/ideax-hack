@@ -51,7 +51,8 @@ export default {
     extra: {
       OPENWEATHER_API_KEY: process.env.OPENWEATHER_API_KEY,
       RAPIDAPI_KEY: process.env.RAPIDAPI_KEY,
-      API_BASE_URL:process.env.API_BASE_URL
+      API_BASE_URL:process.env.API_BASE_URL,
+      FASTAPI_BASE_URL:process.env.FASTAPI_BASE_URL,
     },
     plugins:['expo-router','expo-splash-screen']
   }
