@@ -14,7 +14,6 @@ import { AuthContext } from "../context/AuthContext";
 const { width } = Dimensions.get("window");
 
 export default function FeatureGrid({ items = [] }) {
-  // ✅ default empty array
   const { user } = useContext(AuthContext);
   const router = useRouter();
   const language = useSelector((state) => state.language.value);
@@ -22,7 +21,7 @@ export default function FeatureGrid({ items = [] }) {
   // Translate item titles
   const getTitle = (item) => {
     const translations = {
-      "My Crops": language === "NP" ? "मेरो बाली" : "My Crops",
+      // "My Crops": language === "NP" ? "मेरो बाली" : "My Crops",
       "Crop Health": language === "NP" ? "बाली स्वास्थ्य" : "Crop Health",
       "Sell Produce": language === "NP" ? "बिक्री गर्नुहोस्" : "Sell Produce",
       "Rent Tools": language === "NP" ? "उपकरण भाडामा" : "Rent Tools",
@@ -36,9 +35,9 @@ export default function FeatureGrid({ items = [] }) {
   // Handle navigation on press
   const handlePress = (title) => {
     switch (title) {
-      case "My Crops":
-        router.push("/my-crops");
-        break;
+      // case "My Crops":
+      //   router.push("/my-crops");
+      //   break;
       case "Crop Health":
         router.push("/crop-health");
         break;
@@ -73,9 +72,9 @@ export default function FeatureGrid({ items = [] }) {
   // Filter items based on role
   const filteredItems = displayItems.filter((item) => {
     if (user?.role === "user") {
-      return ["My Crops", "My Purchases", "Prebook"].includes(item.title);
+      return [ "My Purchases", "Prebook"].includes(item.title);
     } else if (user?.role === "farmer") {
-      return ["My Crops", "Crop Health", "Sell Produce", "Rent Tools"].includes(
+      return [ "Crop Health", "Sell Produce", "Rent Tools"].includes(
         item.title
       );
     }

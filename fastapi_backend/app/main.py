@@ -1,63 +1,3 @@
-# # app/main.py
-# from fastapi import FastAPI, UploadFile, File, Form
-# from typing import Optional
-# import uuid
-# import shutil
-# from app.agent import process_step
-# from fastapi.middleware.cors import CORSMiddleware
-
-
-# app = FastAPI()
-
-# # Configure CORS properly
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=[
-#         "http://10.10.255.24:8000",
-#         "*"  
-#     ],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
-
-
-
-# @app.post("/start")
-# def start_session():
-#     return {"session_id": str(uuid.uuid4())}
-
-# @app.get("/next")
-# def get_next_question(session_id: str):
-#     return process_step(session_id)
-
-# @app.post("/next")
-# def submit_answer(
-#     session_id: str = Form(...),
-#     audio: Optional[UploadFile] = File(None),
-#     text: Optional[str] = Form(None)
-# ):
-#     if not audio and not text:
-#         return {"error": "Provide either audio or text"}
-
-#     audio_path = None
-#     if audio:
-#         audio_path = f"data/uploads/{audio.filename}"
-#         with open(audio_path, "wb") as f:
-#             shutil.copyfileobj(audio.file, f)
-
-#     return process_step(
-#         session_id=session_id,
-#         audio_path=audio_path,
-#         text_input=text
-#     )
-
-
-# if __name__ == "__main__":
-#     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
-
-
 
 # app/main.py (FIXED CORS)
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
@@ -141,9 +81,4 @@ def submit_answer(
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    print("🚀 Starting FastAPI server...")
-    print("📡 Host: 0.0.0.0 (accessible from network)")
-    print("🔌 Port: 8000")
-    print("🌐 CORS: Enabled for Expo development")
-    print("📱 Test URL: http://10.10.255.24:8000")
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

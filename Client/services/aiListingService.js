@@ -2,7 +2,7 @@
 import { Platform } from "react-native";
 import Constants from 'expo-constants';
 
-const API_BASE_URL = Constants.expoConfig?.extra?.FASTAPI_BASE_URL || "http://10.10.255.24:8000";
+const API_BASE_URL = Constants.expoConfig?.extra?.FASTAPI_BASE_URL || "https://fastapi-backend-rt5r.onrender.com";
 
 
 console.log("API URL:", API_BASE_URL, "Platform:", Platform.OS);
@@ -11,7 +11,8 @@ console.log("API URL:", API_BASE_URL, "Platform:", Platform.OS);
 
 export const askQuestion = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/next?session_id=1`, {
+    const response = await fetch(`${API_BASE_URL}/next?session_id='55'`, {
+      method: 'GET',
       headers: { 'Accept': 'application/json' }
     });
     

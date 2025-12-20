@@ -1,37 +1,47 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context'; 
-import RentCrop from '../RentCrop';
-import RentMachine from '../RentMachine';
+import React, { useState } from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import RentCrop from "../RentCrop";
+import RentMachine from "../RentMachine";
 
 export default function MarketScreen() {
-  const [selected, setSelected] = useState('produce'); 
+  const [selected, setSelected] = useState("produce");
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       {/* Internal Tab Header */}
       <View style={styles.tabHeader}>
         <TouchableOpacity
-          onPress={() => setSelected('produce')}
+          onPress={() => setSelected("produce")}
           style={[
             styles.tabButton,
-            selected === 'produce' ? styles.tabActive : styles.tabInactive,
+            selected === "produce" ? styles.tabActive : styles.tabInactive,
             { marginRight: 6 },
           ]}
         >
-          <Text style={[styles.tabText, selected === 'produce' && styles.tabTextActive]}>
+          <Text
+            style={[
+              styles.tabText,
+              selected === "produce" && styles.tabTextActive,
+            ]}
+          >
             Produce
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => setSelected('tools')}
+          onPress={() => setSelected("tools")}
           style={[
             styles.tabButton,
-            selected === 'tools' ? styles.tabActiveTools : styles.tabInactive,
+            selected === "tools" ? styles.tabActiveTools : styles.tabInactive,
             { marginLeft: 6 },
           ]}
         >
-          <Text style={[styles.tabText, selected === 'tools' && styles.tabTextActive]}>
+          <Text
+            style={[
+              styles.tabText,
+              selected === "tools" && styles.tabTextActive,
+            ]}
+          >
             Tools
           </Text>
         </TouchableOpacity>
@@ -39,7 +49,7 @@ export default function MarketScreen() {
 
       {/* Screens */}
       <View style={styles.content}>
-        {selected === 'produce' ? <RentCrop /> : <RentMachine />}
+        {selected === "produce" ? <RentCrop /> : <RentMachine />}
       </View>
     </SafeAreaView>
   );
@@ -48,40 +58,40 @@ export default function MarketScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff', 
+    backgroundColor: "#fff",
   },
   tabHeader: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   tabButton: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 12,
     borderRadius: 8,
   },
   tabActive: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     borderBottomWidth: 3,
-    borderBottomColor: '#388e3c',
+    borderBottomColor: "#388e3c",
   },
   tabActiveTools: {
-    backgroundColor: '#1976D2',
+    backgroundColor: "#1976D2",
     borderBottomWidth: 3,
-    borderBottomColor: '#0d47a1',
+    borderBottomColor: "#0d47a1",
   },
   tabInactive: {
-    backgroundColor: '#e5e5e5',
+    backgroundColor: "#e5e5e5",
     borderBottomWidth: 0,
   },
   tabText: {
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   tabTextActive: {
-    color: '#fff',
+    color: "#fff",
   },
   content: {
     flex: 1,

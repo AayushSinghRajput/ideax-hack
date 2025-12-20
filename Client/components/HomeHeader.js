@@ -26,17 +26,17 @@ export default function HomeHeader() {
         <View style={styles.leftSection}>
           <View style={styles.logoContainer}>
             <Image
-              source={require('../assets/images/logo.png')} 
+              source={require('../assets/images/Logo.jpeg')} 
               style={styles.logo}
             />
           </View>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
-              {language === 'EN' ? 'Smart Krishi' : 'स्मार्ट कृषि'}
+              {language === 'EN' ? 'Sahayatri' : 'सहयात्री'}
             </Text>
-            <Text style={styles.subtitle}>
+            {/* <Text style={styles.subtitle}>
               {language === 'EN' ? 'Smart Farming Solutions' : 'स्मार्ट कृषि समाधान'}
-            </Text>
+            </Text> */}
           </View>
         </View>
 

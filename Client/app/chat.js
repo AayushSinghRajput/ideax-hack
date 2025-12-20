@@ -1,4 +1,3 @@
-// components/ChatScreen.js (FIXED - No this.flatList error)
 import React, { useEffect, useState, useRef } from "react";
 import {
   View,

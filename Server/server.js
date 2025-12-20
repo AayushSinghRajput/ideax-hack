@@ -14,8 +14,17 @@ const machineRoutes = require('./routes/machineRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const priceRoutes = require("./routes/priceRoutes");
 const prebookingRoutes = require("./routes/prebookingRoutes");
+const audioRoutes = require("./routes/audioRoutes");
+
 dotenv.config();
 const app = express();
+
+// Create uploads directory if it doesn't exist
+const fs = require('fs');
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // Middleware
 app.use(cors());
@@ -28,7 +37,7 @@ connectDB();
 startScheduler();
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(uploadsDir));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -37,7 +46,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/machines', machineRoutes);
 app.use('/api/news', newsRoutes);
 app.use("/api/prices", priceRoutes);
-app.use("/api/prebooking",prebookingRoutes);
+app.use("/api/prebooking", prebookingRoutes);
+app.use("/api/audio", audioRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -52,7 +62,10 @@ app.use((req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
   console.error('❌ Error:', err);
-  res.status(500).json({ message: 'Internal Server Error' });
+  res.status(500).json({ 
+    message: 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 // Handle unhandled exceptions

@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { AuthContext } from '../context/AuthContext';
+import React, { useContext, useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AuthContext } from "../context/AuthContext";
 
 export default function GreetingCard() {
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const [showQuestion, setShowQuestion] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setShowQuestion(prev => !prev);
+      setShowQuestion((prev) => !prev);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -20,17 +20,15 @@ export default function GreetingCard() {
       <View style={styles.textContainer}>
         <Text style={styles.hello}>नमस्ते (Namaste),</Text>
         <Text style={styles.name}>{user?.name || "Farmer"}</Text>
-        {user?.role === 'user' && <Text style={styles.tip}>Today is a good day for farming</Text>}
+        {user?.role === "user" && (
+          <Text style={styles.tip}>Today is a good day for farming</Text>
+        )}
       </View>
 
       {/* Right: Animated Icon */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-          <Ionicons
-            name={showQuestion ? 'help-circle' : 'alert-circle'}
-            size={32}
-            color="#fff"
-          />
+          <MaterialCommunityIcons name="hands-pray" size={32} color="#fff" />
         </View>
       </View>
     </View>
@@ -39,15 +37,15 @@ export default function GreetingCard() {
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
-    backgroundColor: '#2da84d',
+    flexDirection: "row",
+    backgroundColor: "#2da84d",
     padding: 20,
     borderRadius: 16,
     margin: 16,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    justifyContent: "space-between",
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -56,31 +54,31 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   hello: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
     marginBottom: 4,
   },
   name: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   tip: {
-    color: '#fff',
+    color: "#fff",
     marginTop: 4,
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   iconContainer: {
     marginLeft: 16,
   },
   iconCircle: {
     borderWidth: 2,
-    borderStyle: 'dotted',
-    borderColor: '#fff',
+    borderStyle: "dotted",
+    borderColor: "#fff",
     borderRadius: 40,
     padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

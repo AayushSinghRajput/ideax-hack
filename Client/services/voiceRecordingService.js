@@ -1,7 +1,6 @@
 // CORRECT IMPORTS: Keep expo-av for recording, use legacy file system
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system/legacy";
-import { Platform } from "react-native";
 
 class VoiceRecordingService {
   constructor() {
@@ -83,13 +82,20 @@ class VoiceRecordingService {
 
       const uri = this.recording.getURI();
 
-      // Get file info using legacy API (no deprecation warning with /legacy import)
+      // Get file info
       const fileInfo = await FileSystem.getInfoAsync(uri);
       
-      // Convert audio to base64 using FileSystem.readAsStringAsync with base64 encoding
-      const base64Audio = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      if (!fileInfo.exists) {
+        throw new Error("Audio file not found");
+      }
+
+      // Create audio file object for FormData
+      const audioFile = {
+        uri: uri,
+        name: `recording_${Date.now()}.m4a`,
+        type: 'audio/m4a',
+        size: fileInfo.size,
+      };
 
       // Clean up
       this.recording = null;
@@ -97,10 +103,10 @@ class VoiceRecordingService {
 
       return {
         success: true,
-        uri,
-        base64: base64Audio,
-        filename: `recording_${Date.now()}.m4a`,
+        audioFile: audioFile,
+        uri: uri,
         size: fileInfo.size,
+        message: "Recording stopped successfully",
       };
     } catch (error) {
       console.error("Failed to stop recording:", error);
@@ -108,26 +114,43 @@ class VoiceRecordingService {
     }
   }
 
-  // Convert audio to base64 (alternative method)
-  async convertToBase64(uri) {
+  // Cancel recording
+  async cancelRecording() {
     try {
-      const base64 = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      return base64;
+      if (this.recording) {
+        await this.recording.stopAndUnloadAsync();
+      }
+      this.recording = null;
+      this.isRecording = false;
+      return { success: true, message: "Recording cancelled" };
     } catch (error) {
-      console.error("Failed to convert audio:", error);
-      return "";
+      console.error("Cancel error:", error);
+      return { success: false, error: error.message };
     }
   }
 
-  // Cancel recording
-  cancelRecording() {
-    if (this.recording) {
-      this.recording.stopAndUnloadAsync();
-      this.recording = null;
-      this.isRecording = false;
-      this.recordingInstance = null;
+  // Get current recording status
+  getStatus() {
+    return {
+      isRecording: this.isRecording,
+      hasRecording: !!this.recording,
+    };
+  }
+
+  // Clean up resources
+  async cleanup() {
+    try {
+      await this.cancelRecording();
+      // Reset audio mode
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: false,
+        shouldDuckAndroid: false,
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Cleanup error:", error);
+      return { success: false, error: error.message };
     }
   }
 }
