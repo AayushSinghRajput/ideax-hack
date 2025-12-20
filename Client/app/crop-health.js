@@ -17,6 +17,9 @@ import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import Toast from "react-native-toast-message";
+import Constants from "expo-constants";
+
+const API_BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL;
 
 const CropHealthScreen = () => {
   const router = useRouter();
@@ -175,8 +178,8 @@ const CropHealthScreen = () => {
     } catch (error) {
       console.log("Camera error:", error);
       Toast.show({
-        type:'error',
-        text1:'Failed to take photo. Please try again.'
+        type: "error",
+        text1: "Failed to take photo. Please try again.",
       });
     }
   };
@@ -202,9 +205,9 @@ const CropHealthScreen = () => {
     } catch (error) {
       console.log("Gallery error:", error);
       Toast.show({
-        type:'error',
-        text1:"Failed to select image. Please try again."
-      })
+        type: "error",
+        text1: "Failed to select image. Please try again.",
+      });
     }
   };
 
@@ -220,7 +223,7 @@ const CropHealthScreen = () => {
         name: "crop.jpg",
       });
 
-      const response = await fetch("http://192.168.1.68:5000/api/analysis", {
+      const response = await fetch(`${API_BASE_URL}/analysis`, {
         method: "POST",
         body: formData,
         headers: {
@@ -232,9 +235,9 @@ const CropHealthScreen = () => {
 
       if (!response.ok || data.error) {
         Toast.show({
-          type:'error',
-          text1:data.error || 'Failed to analyze crop'
-        })
+          type: "error",
+          text1: data.error || "Failed to analyze crop",
+        });
       }
 
       const { disease, confidence, recommendations } = data;
@@ -288,8 +291,8 @@ const CropHealthScreen = () => {
       console.error(err);
       setIsAnalyzing(false);
       Toast.show({
-        type:'error',
-        text1: err.message || 'Something went wrong.'
+        type: "error",
+        text1: err.message || "Something went wrong.",
       });
     }
   };

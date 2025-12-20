@@ -20,7 +20,7 @@ export default function Profile() {
   // Navigation mapping based on label names
   const getNavigationRoute = (label) => {
     const routeMap = {
-      'My Crops': '/my-crops',
+      // 'My Crops': '/my-crops',
       'Crop Health':'/crop-health',
       'My Orders': '/RentMachine',
       'News':'/News',

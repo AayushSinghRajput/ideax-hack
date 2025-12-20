@@ -6,13 +6,50 @@ export const greetingUser = {
 };
 
 export const featureGridItems = [
-  { id: "1", title: "My Crops", icon: "leaf-outline", bgColor: "#e8f5e9" },
-  { id: "2", title: "Crop Health", icon: "medkit-outline", bgColor: "#fde0dc" },
-  { id: "3", title: "Sell Produce", icon: "cart-outline", bgColor: "#fff3e0" },
-  { id: "4", title: "Rent Tools", icon: "construct-outline", bgColor: "#e3f2fd" },
-  { id: "5", title: "Purchase Now", icon: "basket-outline", bgColor: "#f3e5f5" },
-  { id: "6", title: "Prebook", icon: "calendar-outline", bgColor: "#f3e5f5" }, 
+  {
+    id: "1",
+    title: "My Crops",
+    icon: "leaf-outline",
+    bgColor: "#e8f5e9",
+    iconBgColor: "#2e7d32", // green – growth & farming
+  },
+  {
+    id: "2",
+    title: "Crop Health",
+    icon: "medkit-outline",
+    bgColor: "#fde0dc",
+    iconBgColor: "#c62828", // red – health & care
+  },
+  {
+    id: "3",
+    title: "Sell Produce",
+    icon: "cart-outline",
+    bgColor: "#fff3e0",
+    iconBgColor: "#ef6c00", // orange – selling & market
+  },
+  {
+    id: "4",
+    title: "Rent Tools",
+    icon: "construct-outline",
+    bgColor: "#e3f2fd",
+    iconBgColor: "#1565c0", // blue – tools & reliability
+  },
+  {
+    id: "5",
+    title: "Purchase Now",
+    icon: "basket-outline",
+    bgColor: "#f3e5f5",
+    iconBgColor: "#6a1b9a", // purple – shopping & action
+  },
+  {
+    id: "6",
+    title: "Prebook",
+    icon: "calendar-outline",
+    bgColor: "#f3e5f5",
+    iconBgColor: "#4527a0", // deep purple – planning & scheduling
+  },
 ];
+
 
 
 export const farmingTips = [
@@ -306,15 +343,15 @@ export const profileInfo = {
 };
 
 export const profileOptions = [
-  { id: "1", label: "My Crops", icon: "leaf" },
-  { id: "2", label: "Crop Health", icon: "leaf-outline" },
-  { id: "3", label: "My Orders", icon: "cart" },
-  { id: "4", label: "News", icon: "newspaper-outline" },
-  { id: "5", label: "Notifications", icon: "notifications" },
-  { id: "6", label: "Billing & Payments", icon: "card" },
-  { id: "7", label: "Settings", icon: "settings" },
-  { id: "8", label: "Help & Support", icon: "help-circle" },
-  { id: "9", label: "Logout", icon: "log-out" },
+  // { id: "1", label: "My Crops", icon: "leaf" },
+  { id: "1", label: "Crop Health", icon: "leaf-outline" },
+  { id: "2", label: "My Orders", icon: "cart" },
+  { id: "3", label: "News", icon: "newspaper-outline" },
+  { id: "4", label: "Notifications", icon: "notifications" },
+  { id: "5", label: "Billing & Payments", icon: "card" },
+  { id: "6", label: "Settings", icon: "settings" },
+  { id: "7", label: "Help & Support", icon: "help-circle" },
+  { id: "8", label: "Logout", icon: "log-out" },
 ];
 
 // constants/data.js
@@ -378,33 +415,33 @@ export const smartKrishiFAQs = [
 export const FavoriteFarmer = [
   {
     name: "Ramesh Yadav",
-    location: "1.2 km",
-    contact: "+91 9876543210",
-    image: require("../assets/images/farmer.jpg"),
+    location: "Janakpur",
+    contact: "+977 9876543210",
+    image: require("../assets/images/farmer1.jpg"),
   },
   {
     name: "Nirmal Thapa",
-    location: "2.8 km",
-    contact: "+91 9123456780",
-    image: require("../assets/images/farmer.jpg"),
+    location: "Dharan",
+    contact: "+977 9823456780",
+    image: require("../assets/images/farmer2.jpg"),
   },
   {
     name: "Mohammad Irfan",
-    location: "3.1 km",
-    contact: "+91 9988776655",
-    image: require("../assets/images/farmer.jpg"),
+    location: "Chitwan",
+    contact: "+977 9788776655",
+    image: require("../assets/images/farmer3.jpg"),
   },
   {
-    name: "Hari Prasad Acharya",
-    location: "0.9 km",
-    contact: "+91 8877665544",
-    image: require("../assets/images/farmer.jpg"),
+    name: "Nirmala Thapa",
+    location: "Kathmandu",
+    contact: "+977 9877665544",
+    image: require("../assets/images/farmer4.jpg"),
   },
   {
-    name: "Aeron Panta",
-    location: "4.5 km",
-    contact: "+91 7766554433",
-    image: require("../assets/images/farmer.jpg"),
+    name: "Rabina Lama",
+    location: "Jumla",
+    contact: "+977 9766554433",
+    image: require("../assets/images/farmer5.jpeg"),
   },
 ];
 
@@ -415,7 +452,7 @@ export const cropPurchases = [
     quantity: "50 kg",
     personName: "Ramesh Yadav",
     status: "Delivered",
-    totalAmount: "₹2000",
+    totalAmount: "Rs2000",
   },
   {
     image: require("../assets/crops/rice.jpg"),
@@ -423,7 +460,7 @@ export const cropPurchases = [
     quantity: "100 kg",
     personName: "Sita Kumari",
     status: "Pending",
-    totalAmount: "₹4500",
+    totalAmount: "Rs4500",
   },
   {
     image: require("../assets/crops/onion.jpg"),
@@ -431,7 +468,7 @@ export const cropPurchases = [
     quantity: "30 kg",
     personName: "Ajay Singh",
     status: "Delivered",
-    totalAmount: "₹1500",
+    totalAmount: "Rs1500",
   },
   {
     image: require("../assets/crops/potato.jpg"),
@@ -439,7 +476,7 @@ export const cropPurchases = [
     quantity: "40 kg",
     personName: "Kavita Sharma",
     status: "Cancelled",
-    totalAmount: "₹3200",
+    totalAmount: "Rs3200",
   },
   {
     image: require("../assets/crops/maize.jpg"),
@@ -447,7 +484,7 @@ export const cropPurchases = [
     quantity: "25 kg",
     personName: "Deepak Patel",
     status: "Delivered",
-    totalAmount: "₹1800",
+    totalAmount: "Rs1800",
   },
 ];
 
