@@ -19,7 +19,6 @@ import { useNavigation } from "expo-router";
 import { AuthContext } from "../context/AuthContext";
 import { useRouter } from "expo-router";
 
-
 // Import machine images from assets
 const machineImages = {
   tractor: require("../assets/machine/mini-tractor.jpeg"), // Update with actual filename
@@ -151,7 +150,7 @@ export default function RentMachine({ navigation }) {
   const [selectedMachine, setSelectedMachine] = useState(null);
   const [aiMachineDraft, setAiMachineDraft] = useState(null);
 
-   /**
+  /**
    * ✅ CALL THIS FROM CHAT SCREEN
    * When backend returns { done: true, data: {...machineFields} }
    */
@@ -217,7 +216,7 @@ export default function RentMachine({ navigation }) {
       },
       ...prev,
     ]);
-     // ✅ CLEAR AI DATA AFTER SUCCESS
+    // ✅ CLEAR AI DATA AFTER SUCCESS
     setAiMachineDraft(null);
     setModalVisible(false);
   };
@@ -351,16 +350,13 @@ export default function RentMachine({ navigation }) {
             </View>
           )}
 
-
-
           <TouchableOpacity
-  style={styles.chatBtn}
-  onPress={() => router.push("/chat")}
->
-  <FontAwesome5 name="comments" size={16} color="#fff" />
-  <Text style={styles.chatBtnText}>Chat</Text>
-</TouchableOpacity>
-
+            style={styles.chatBtn}
+            onPress={() => router.push("/chat")}
+          >
+            <FontAwesome5 name="comments" size={16} color="#fff" />
+            <Text style={styles.chatBtnText}>Chat</Text>
+          </TouchableOpacity>
 
           {/* List Your Machine Button */}
           <TouchableOpacity
@@ -474,7 +470,7 @@ export default function RentMachine({ navigation }) {
 
       {/* Machine Form Modal */}
       <MachineForm
-         visible={modalVisible}
+        visible={modalVisible}
         onClose={() => {
           setModalVisible(false);
           setAiMachineDraft(null); // ✅ ADD
@@ -827,19 +823,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50",
   },
   chatBtn: {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#2e7d32",
-  marginHorizontal: 16,
-  marginTop: 12,
-  paddingVertical: 14,
-  borderRadius: 10,
-},
-chatBtnText: {
-  color: "#fff",
-  fontWeight: "600",
-  marginLeft: 8,
-},
-
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#2e7d32",
+    marginHorizontal: 16,
+    marginTop: 12,
+    paddingVertical: 14,
+    borderRadius: 10,
+  },
+  chatBtnText: {
+    color: "#fff",
+    fontWeight: "600",
+    marginLeft: 8,
+  },
 });

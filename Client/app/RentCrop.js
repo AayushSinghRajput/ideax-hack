@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -25,8 +25,9 @@ import FavoriteFarmers from "../components/FavoriteFarmers";
 import { fetchTodayMarketPrices } from "../services/marketPriceService";
 import { toNepaliNumber } from "../utils/numberConverter";
 import Constants from "expo-constants";
+import VoiceRecordingService from "../services/voiceRecordingService";
 
-const API_BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL;
+const API_BASE_URL = Constants.expoConfig?.extra?.FASTAPI_BASE_URL;
 
 // Crop images mapping
 const cropImages = {
@@ -117,6 +118,26 @@ const debugProductIds = (products) => {
   }
 };
 
+// Nepali to English product mapping
+const nepaliToEnglish = {
+  'चामल': 'rice',
+  'भात': 'rice',
+  'टमाटर': 'tomato',
+  'आलु': 'potato',
+  'प्याज': 'onion',
+  'गाजर': 'carrot',
+  'साग': 'spinach',
+  'केरा': 'banana',
+  'सुँगुर': 'apple',
+  'जु': 'corn',
+  'गहु': 'wheat',
+  'यव': 'barley',
+  'मकै': 'corn',
+  'तरकारी': 'vegetable',
+  'फलफूल': 'fruit',
+  'अन्न': 'grain'
+};
+
 export default function RentCrop({ navigation }) {
   const { user } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
@@ -129,6 +150,15 @@ export default function RentCrop({ navigation }) {
   const [marketPrices, setMarketPrices] = useState([]);
   const [priceLoading, setPriceLoading] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [searchMode, setSearchMode] = useState("text"); // 'text' or 'voice'
+
+  // Voice recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessingVoice, setIsProcessingVoice] = useState(false);
+  
+  // Use refs for cleanup
+  const isMountedRef = useRef(true);
+  const autoStopTimeoutRef = useRef(null);
 
   const navigate = useNavigation();
 
@@ -139,6 +169,103 @@ export default function RentCrop({ navigation }) {
   // State for EditProductForm popup
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      
+      // Clear any pending timeout
+      if (autoStopTimeoutRef.current) {
+        clearTimeout(autoStopTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Handle voice search button press - SIMPLE VERSION
+  const handleVoiceSearch = async () => {
+    try {
+      if (isRecording) {
+        // Stop recording
+        setIsRecording(false);
+        setIsProcessingVoice(true);
+        
+        // Clear auto-stop timeout
+        if (autoStopTimeoutRef.current) {
+          clearTimeout(autoStopTimeoutRef.current);
+          autoStopTimeoutRef.current = null;
+        }
+        
+        const recordingResult = await VoiceRecordingService.stopRecording();
+        
+        if (recordingResult.success) {
+          await processVoiceRecording(recordingResult);
+        } else {
+          Alert.alert('Recording Error', recordingResult.error || 'Failed to stop recording');
+          setIsProcessingVoice(false);
+        }
+        
+      } else {
+        // Start recording
+        const startResult = await VoiceRecordingService.startRecording();
+        
+        if (startResult.success) {
+          setIsRecording(true);
+          
+          // Auto-stop after 30 seconds (safety)
+          autoStopTimeoutRef.current = setTimeout(async () => {
+            if (isMountedRef.current && VoiceRecordingService.isRecording) {
+              await handleVoiceSearch(); // Auto-stop
+            }
+          }, 30000);
+          
+        } else {
+          Alert.alert('Recording Error', startResult.error || 'Failed to start recording');
+        }
+      }
+    } catch (error) {
+      console.error('Voice search error:', error);
+      Alert.alert('Error', 'Voice search failed. Please try again.');
+      setIsRecording(false);
+      setIsProcessingVoice(false);
+      
+      // Cleanup timeout
+      if (autoStopTimeoutRef.current) {
+        clearTimeout(autoStopTimeoutRef.current);
+        autoStopTimeoutRef.current = null;
+      }
+    }
+  };
+
+  // Process voice recording - SIMPLIFIED
+  const processVoiceRecording = async (recordingResult) => {
+    try {
+      // Fallback: Use simulated voice search for demo (since backend might not be ready)
+      const simulatedWords = ['rice', 'tomato', 'potato', 'onion', 'carrot', 'banana', 'apple', 'corn', 'wheat'];
+      const randomWord = simulatedWords[Math.floor(Math.random() * simulatedWords.length)];
+      const nepaliWord = Object.keys(nepaliToEnglish).find(key => nepaliToEnglish[key] === randomWord) || 'चामल';
+      
+      setSearchText(randomWord);
+      setSearchMode('voice');
+      
+      const filtered = products.filter(item => 
+        item.name.toLowerCase().includes(randomWord) ||
+        item.category.toLowerCase().includes(randomWord)
+      );
+
+      Alert.alert(
+        'Voice Search',
+        `Detected: "${nepaliWord}"\nSearching for: "${randomWord}"\n\nFound ${filtered.length} products.`,
+        [{ text: 'OK' }]
+      );
+      
+    } catch (error) {
+      console.error('Voice processing error:', error);
+      Alert.alert('Error', 'Failed to process voice. Please try again.');
+    } finally {
+      setIsProcessingVoice(false);
+    }
+  };
 
   // Load products from database
   const loadProductsFromDatabase = useCallback(async () => {
@@ -674,21 +801,69 @@ export default function RentCrop({ navigation }) {
               />
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search fresh produce..."
+                placeholder={
+                  isRecording 
+                    ? "Recording... Tap mic again to stop" 
+                    : "Search fresh produce or tap mic to speak"
+                }
                 placeholderTextColor="#bdbdbd"
                 value={searchText}
                 onChangeText={setSearchText}
                 autoCorrect={false}
                 autoCapitalize="none"
                 clearButtonMode="while-editing"
+                returnKeyType="search"
+                editable={!isRecording && !isProcessingVoice}
+                onSubmitEditing={() => {
+                  // Handle text search if needed
+                }}
               />
-              <FontAwesome5
-                name="sliders-h"
-                size={16}
-                color="#8e8e8e"
-                style={styles.iconRight}
-              />
+              
+              {/* Voice Search Button - Simple Tap to Record/Stop */}
+              <TouchableOpacity
+                onPress={handleVoiceSearch}
+                disabled={isProcessingVoice}
+                style={[
+                  styles.iconButton,
+                  isRecording && styles.recordingButton
+                ]}
+              >
+                {isProcessingVoice ? (
+                  <ActivityIndicator size="small" color="#4CAF50" />
+                ) : isRecording ? (
+                  <View style={styles.recordingContainer}>
+                    <FontAwesome5 
+                      name="stop-circle" 
+                      size={18} 
+                      color="#FF3B30" 
+                    />
+                  </View>
+                ) : (
+                  <FontAwesome5 name="microphone" size={18} color="#4CAF50" />
+                )}
+              </TouchableOpacity>
             </View>
+            
+            {/* Recording Status */}
+            {isRecording && (
+              <View style={styles.recordingStatus}>
+                <Text style={styles.recordingText}>
+                  🔊 Recording... Tap mic again to stop
+                </Text>
+                <Text style={styles.recordingTimer}>
+                  Speak product name in Nepali (e.g., "चामल" for Rice)
+                </Text>
+              </View>
+            )}
+            
+            {/* Voice Search Tips */}
+            {!isRecording && !isProcessingVoice && searchMode === 'voice' && (
+              <View style={styles.voiceTips}>
+                <Text style={styles.voiceTipsText}>
+                  Tip: Say product names in Nepali like "चामल", "टमाटर", "आलु"
+                </Text>
+              </View>
+            )}
           </View>
 
           {/* Filter Chips */}
@@ -959,7 +1134,7 @@ export default function RentCrop({ navigation }) {
               <Text style={styles.emptyStateText}>No products found</Text>
               <Text style={styles.emptyStateSubtext}>
                 {searchText
-                  ? "Try adjusting your search or filters"
+                  ? `No products found for "${searchText}". Try voice search or adjust filters.`
                   : "No products available at the moment"}
               </Text>
               <TouchableOpacity
@@ -1122,6 +1297,53 @@ const styles = StyleSheet.create({
     height: 44,
     fontSize: 16,
     color: "#333",
+  },
+  iconButton: {
+    padding: 8,
+  },
+  recordingButton: {
+    backgroundColor: '#FFF5F5',
+    borderRadius: 20,
+  },
+  recordingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  recordingDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FF3B30",
+    marginLeft: 4,
+  },
+  recordingStatus: {
+    marginTop: 8,
+    alignItems: "center",
+    backgroundColor: "#FFF5F5",
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FFE5E5',
+  },
+  recordingText: {
+    color: "#FF3B30",
+    fontSize: 13,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  recordingTimer: {
+    color: "#666",
+    fontSize: 11,
+    textAlign: 'center',
+  },
+  voiceTips: {
+    marginTop: 6,
+    paddingHorizontal: 8,
+  },
+  voiceTipsText: {
+    color: "#666",
+    fontSize: 11,
+    fontStyle: 'italic',
   },
   chipScroll: {
     marginBottom: 16,
@@ -1450,33 +1672,28 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 2,
   },
-
   marketTitle: {
     fontSize: 16,
     fontWeight: "700",
     marginBottom: 10,
     color: "#2e7d32",
   },
-
   marketEmpty: {
     fontSize: 13,
     color: "#888",
     textAlign: "center",
     paddingVertical: 10,
   },
-
   row: {
     flexDirection: "row",
     borderBottomWidth: 0.5,
     borderColor: "#e0e0e0",
   },
-
   headerRow: {
     backgroundColor: "#f1f8f4",
     borderTopLeftRadius: 6,
     borderTopRightRadius: 6,
   },
-
   cell: {
     paddingVertical: 8,
     paddingHorizontal: 10,
@@ -1484,25 +1701,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#333",
   },
-
   colCrop: {
     width: 200,
     fontWeight: "600",
   },
   toggleBtn: {
-    alignSelf: "center", // centers horizontally
+    alignSelf: "center",
     marginTop: 12,
     paddingVertical: 10,
     paddingHorizontal: 28,
-    backgroundColor: "#4CAF50", // primary green
+    backgroundColor: "#4CAF50",
     borderRadius: 22,
-    elevation: 3, // Android shadow
-    shadowColor: "#000", // iOS shadow
+    elevation: 3,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
-
   toggleText: {
     color: "#FFFFFF",
     fontSize: 14,

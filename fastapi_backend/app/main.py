@@ -74,11 +74,6 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:19006",    # Expo dev server (iOS simulator)
-        "http://localhost:19000",    # Expo dev server alternative
-        "http://192.168.*:*",        # All local network IPs
-        "http://10.10.255.24:19006", # Your specific IP with Expo port
-        "http://10.10.255.24:19000", # Alternative port
         "*"                          # Allow all for testing
     ],
     allow_credentials=True,

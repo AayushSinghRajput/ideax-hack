@@ -14,7 +14,8 @@ export default {
       supportsTablet: true,
       infoPlist: {
         NSLocationWhenInUseUsageDescription: "This app needs access to your location to provide location-based services.",
-        NSLocationAlwaysUsageDescription: "This app needs access to your location even when the app is in the background."
+        NSLocationAlwaysUsageDescription: "This app needs access to your location even when the app is in the background.",
+        NSMicrophoneUsageDescription: "This app needs access to your microphone for voice search functionality."
       }
     },
     android: {
@@ -25,7 +26,8 @@ export default {
       edgeToEdgeEnabled: true,
       permissions: [
         "ACCESS_FINE_LOCATION",  
-        "ACCESS_COARSE_LOCATION" 
+        "ACCESS_COARSE_LOCATION",
+        "RECORD_AUDIO"  // Add this for microphone access
       ]
     },
     web: {
@@ -43,6 +45,12 @@ export default {
           resizeMode: 'contain',
           backgroundColor: '#ffffff'
         }
+      ],
+      [  // Add expo-av plugin for microphone permissions
+        'expo-av',
+        {
+          microphonePermission: 'Allow $(PRODUCT_NAME) to access your microphone for voice search functionality.'
+        }
       ]
     ],
     experiments: {
@@ -51,9 +59,8 @@ export default {
     extra: {
       OPENWEATHER_API_KEY: process.env.OPENWEATHER_API_KEY,
       RAPIDAPI_KEY: process.env.RAPIDAPI_KEY,
-      API_BASE_URL:process.env.API_BASE_URL,
-      FASTAPI_BASE_URL:process.env.FASTAPI_BASE_URL || "http://10.10.255.24:8000",
-    },
-    plugins:['expo-router','expo-splash-screen']
+      API_BASE_URL: process.env.API_BASE_URL,
+      FASTAPI_BASE_URL: process.env.FASTAPI_BASE_URL || "http://10.10.255.24:8000",
+    }
   }
 };
