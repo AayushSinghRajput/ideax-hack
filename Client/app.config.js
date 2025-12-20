@@ -60,7 +60,7 @@ export default {
       OPENWEATHER_API_KEY: process.env.OPENWEATHER_API_KEY,
       RAPIDAPI_KEY: process.env.RAPIDAPI_KEY,
       API_BASE_URL: process.env.API_BASE_URL,
-      FASTAPI_BASE_URL: process.env.FASTAPI_BASE_URL || "http://10.10.255.24:8000",
+      FASTAPI_BASE_URL: process.env.FASTAPI_BASE_URL,
     }
   }
 };

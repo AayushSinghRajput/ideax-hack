@@ -2,7 +2,7 @@
 import { Platform } from "react-native";
 import Constants from 'expo-constants';
 
-const API_BASE_URL = Constants.expoConfig?.extra?.FASTAPI_BASE_URL || "https://fastapi-backend-rt5r.onrender.com";
+const API_BASE_URL = Constants.expoConfig?.extra?.FASTAPI_BASE_URL;
 
 
 console.log("API URL:", API_BASE_URL, "Platform:", Platform.OS);

@@ -22,7 +22,7 @@ class AudioController {
       const translation = await groq.audio.translations.create({
         file: fs.createReadStream(req.file.path),
         model: 'whisper-large-v3',
-        prompt: req.body.prompt || 'Transcribe this audio',
+        prompt: req.body.prompt || 'Translate this nepali language audio into english language text',
         language: req.body.language || 'en',
         response_format: 'json',
         temperature: parseFloat(req.body.temperature) || 0.0,

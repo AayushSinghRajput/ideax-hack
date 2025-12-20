@@ -30,14 +30,14 @@ class VoiceRecordingService {
     }
   }
 
-  // Start recording
+  // Start recording - CHANGED TO MP4 FORMAT
   async startRecording() {
     try {
       await this.requestPermissions();
 
       const recordingOptions = {
         android: {
-          extension: ".m4a",
+          extension: ".mp4", // Changed from .m4a to .mp4
           outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
           audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
           sampleRate: 44100,
@@ -45,7 +45,7 @@ class VoiceRecordingService {
           bitRate: 128000,
         },
         ios: {
-          extension: ".m4a",
+          extension: ".mp4", // Changed from .m4a to .mp4
           outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_MPEG4AAC,
           audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
           sampleRate: 44100,
@@ -89,13 +89,21 @@ class VoiceRecordingService {
         throw new Error("Audio file not found");
       }
 
-      // Create audio file object for FormData
+      // Create audio file object for FormData with MP4 mime type
       const audioFile = {
         uri: uri,
-        name: `recording_${Date.now()}.m4a`,
-        type: 'audio/m4a',
+        name: `recording_${Date.now()}.mp4`, // Changed to .mp4
+        type: 'audio/mp4', // Changed to audio/mp4
         size: fileInfo.size,
       };
+
+      // Log file info for debugging
+      console.log("Recording file created:", {
+        name: audioFile.name,
+        type: audioFile.type,
+        size: audioFile.size,
+        uri: audioFile.uri.substring(0, 50) + "...", // Truncate for readability
+      });
 
       // Clean up
       this.recording = null;
@@ -111,6 +119,35 @@ class VoiceRecordingService {
     } catch (error) {
       console.error("Failed to stop recording:", error);
       return { success: false, error: error.message };
+    }
+  }
+
+  // Alternative: Convert to MP3 if needed (optional)
+  async convertToMP3(uri) {
+    try {
+      console.log("Converting audio to MP3 format...");
+      // Note: This is a placeholder - actual conversion would require 
+      // additional libraries like expo-audio or react-native-ffmpeg
+      // For now, we'll just rename and change the mime type
+      
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      if (!fileInfo.exists) {
+        throw new Error("File not found for conversion");
+      }
+      
+      // Create new file object with MP3 extension
+      const mp3File = {
+        uri: uri,
+        name: `recording_${Date.now()}.mp3`,
+        type: 'audio/mpeg',
+        size: fileInfo.size,
+      };
+      
+      console.log("Converted to MP3 format:", mp3File);
+      return mp3File;
+    } catch (error) {
+      console.error("Conversion error:", error);
+      throw error;
     }
   }
 
@@ -152,6 +189,23 @@ class VoiceRecordingService {
       console.error("Cleanup error:", error);
       return { success: false, error: error.message };
     }
+  }
+
+  // Get supported formats info
+  getSupportedFormats() {
+    return {
+      android: ['.mp4', '.m4a', '.aac'],
+      ios: ['.mp4', '.m4a', '.caf'],
+      backendSupported: ['.mp3', '.wav', '.mp4', '.ogg', '.mpeg'],
+      backendMimeTypes: [
+        'audio/mpeg',
+        'audio/wav',
+        'audio/mp4',
+        'audio/mp3',
+        'audio/ogg',
+        'video/mp4'
+      ]
+    };
   }
 }
 

@@ -10,8 +10,8 @@ export const featureGridItems = [
   { id: "2", title: "Crop Health", icon: "medkit-outline", bgColor: "#fde0dc" },
   { id: "3", title: "Sell Produce", icon: "cart-outline", bgColor: "#fff3e0" },
   { id: "4", title: "Rent Tools", icon: "construct-outline", bgColor: "#e3f2fd" },
-  { id: "5", title: "My Purchases", icon: "basket-outline", bgColor: "#f3e5f5" },
-  { id: "6", title: "Prebook", icon: "calendar-outline", bgColor: "#f3e5f5" }, // ✅ Prebook
+  { id: "5", title: "Purchase Now", icon: "basket-outline", bgColor: "#f3e5f5" },
+  { id: "6", title: "Prebook", icon: "calendar-outline", bgColor: "#f3e5f5" }, 
 ];
 
 

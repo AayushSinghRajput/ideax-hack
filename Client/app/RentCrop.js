@@ -125,26 +125,6 @@ const debugProductIds = (products) => {
   }
 };
 
-// Nepali to English product mapping
-const nepaliToEnglish = {
-  चामल: "rice",
-  भात: "rice",
-  टमाटर: "tomato",
-  आलु: "potato",
-  प्याज: "onion",
-  गाजर: "carrot",
-  साग: "spinach",
-  केरा: "banana",
-  सुँगुर: "apple",
-  जु: "corn",
-  गहु: "wheat",
-  यव: "barley",
-  मकै: "corn",
-  तरकारी: "vegetable",
-  फलफूल: "fruit",
-  अन्न: "grain",
-};
-
 export default function RentCrop({ navigation }) {
   const { user } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
@@ -189,7 +169,7 @@ export default function RentCrop({ navigation }) {
     };
   }, []);
 
-  // Handle voice search button press - SIMPLE VERSION
+  // Handle voice search button press
   const handleVoiceSearch = async () => {
     try {
       if (isRecording) {
@@ -248,8 +228,7 @@ export default function RentCrop({ navigation }) {
     }
   };
 
-
-  //process voice recording
+  // Process voice recording
   const processVoiceRecording = async (audioFile) => {
     try {
       console.log("Processing voice recording:", audioFile);
@@ -293,13 +272,16 @@ export default function RentCrop({ navigation }) {
       const searchTerm =
         VoiceTranscriptionService.convertToSearchTerm(transcribedText);
 
-      // Step 4: Extract Nepali equivalent for display
+      // Step 4: Extract crops for display
       const extractedCrops =
         VoiceTranscriptionService.extractCropNames(transcribedText);
       const nepaliDisplay =
-        extractedCrops.length > 0 ? extractedCrops[0].nepali : transcribedText;
+        extractedCrops.length > 0
+          ? extractedCrops[0].nepali
+          : VoiceTranscriptionService.getNepaliEquivalent(searchTerm);
 
       // Step 5: Apply the search
+      console.log("Setting search term:", searchTerm);
       setSearchText(searchTerm);
       setSearchMode("voice");
 
@@ -315,14 +297,14 @@ export default function RentCrop({ navigation }) {
       // Step 7: Show results
       Alert.alert(
         "Voice Search Results",
-        `You said: "${transcribedText}"\n\nDetected: "${nepaliDisplay}"\nSearching for: "${searchTerm}"\n\nFound ${filtered.length} matching products.`,
+        `Transcription: "${transcribedText}"\n\nDetected: "${nepaliDisplay}"\nSearching for: "${searchTerm}"\n\nFound ${filtered.length} matching products.`,
         [
           {
             text: "OK",
             onPress: () => {
-              // Optional: Scroll to top to show filtered results
+              // Optional: Scroll to show results
               if (filtered.length > 0) {
-                // You could add logic here to scroll or highlight
+                // You could add scroll logic here
               }
             },
           },
@@ -346,16 +328,16 @@ export default function RentCrop({ navigation }) {
     }
   };
 
-  // Add this helper function
+  // Helper function for fallback voice search
   const useSimulatedVoiceSearch = async () => {
     try {
-      // Fallback simulation for demo
+      // Fallback simulation with English crop names
       const simulatedWords = [
-        "rice",
         "tomato",
         "potato",
         "onion",
         "carrot",
+        "rice",
         "banana",
         "apple",
         "corn",
@@ -377,7 +359,7 @@ export default function RentCrop({ navigation }) {
 
       Alert.alert(
         "Voice Search (Demo Mode)",
-        `Backend service is unavailable. Using demo mode.\n\nDetected: "${nepaliWord}"\nSearching for: "${randomWord}"\n\nFound ${filtered.length} products.`,
+        `Backend service is unavailable. Using demo mode.\n\nSearching for: "${randomWord}" (${nepaliWord})\n\nFound ${filtered.length} products.`,
         [{ text: "OK" }]
       );
     } catch (fallbackError) {
@@ -385,6 +367,8 @@ export default function RentCrop({ navigation }) {
       Alert.alert("Error", "Voice search failed. Please try typing instead.");
     }
   };
+
+
 
   // Load products from database
   const loadProductsFromDatabase = useCallback(async () => {
@@ -923,7 +907,7 @@ export default function RentCrop({ navigation }) {
                 placeholder={
                   isRecording
                     ? "Recording... Tap mic again to stop"
-                    : "Search fresh produce or tap mic to speak"
+                    : "Search fresh produce. Say in English: 'tomato', 'potato', 'rice'"
                 }
                 placeholderTextColor="#bdbdbd"
                 value={searchText}
@@ -970,7 +954,7 @@ export default function RentCrop({ navigation }) {
                   🔊 Recording... Tap mic again to stop
                 </Text>
                 <Text style={styles.recordingTimer}>
-                  Speak product name in Nepali (e.g., "चामल" for Rice)
+                  Speak crop names in English (e.g., "tomato", "potato", "rice")
                 </Text>
               </View>
             )}
@@ -979,7 +963,8 @@ export default function RentCrop({ navigation }) {
             {!isRecording && !isProcessingVoice && searchMode === "voice" && (
               <View style={styles.voiceTips}>
                 <Text style={styles.voiceTipsText}>
-                  Tip: Say product names in Nepali like "चामल", "टमाटर", "आलु"
+                  Tip: Say crop names in English like "tomato", "potato",
+                  "rice", "banana"
                 </Text>
               </View>
             )}
@@ -1293,6 +1278,7 @@ export default function RentCrop({ navigation }) {
         </ScrollView>
       </KeyboardAvoidingView>
 
+ 
       {/* Modals */}
       <CropForm
         visible={modalVisible}

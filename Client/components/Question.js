@@ -9,7 +9,7 @@ import {
   UIManager,
 } from "react-native";
 import { useSelector } from "react-redux";
-import Icon from "react-native-vector-icons/MaterialIcons"; // Add this import
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 // Enable LayoutAnimation on Android
 if (
@@ -235,9 +235,6 @@ const styles = StyleSheet.create({
   },
   chevronRotated: {
     transform: [{ rotate: "180deg" }],
-  },
-  chevronIcon: {
-    // No additional styles needed, handled by the Icon component
   },
   answerContainer: {
     paddingHorizontal: 16,

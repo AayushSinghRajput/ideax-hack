@@ -26,7 +26,7 @@ export default function FeatureGrid({ items = [] }) {
       "Sell Produce": language === "NP" ? "बिक्री गर्नुहोस्" : "Sell Produce",
       "Rent Tools": language === "NP" ? "उपकरण भाडामा" : "Rent Tools",
       "Buy Produce": language === "NP" ? "किन्नुहोस्" : "Buy Produce",
-      "My Purchases": language === "NP" ? "मेरो खरिद" : "My Purchases",
+      "Purchase Now": language === "NP" ? "अहिले खरिद" : "Purchase Now",
       Prebook: language === "NP" ? "अग्रिम बुक" : "Prebook",
     };
     return translations[item.title] || item.title;
@@ -44,7 +44,7 @@ export default function FeatureGrid({ items = [] }) {
       case "Sell Produce":
         router.push("/RentCrop");
         break;
-      case "My Purchases":
+      case "Purchase Now":
         router.push("/RentCrop");
         break;
       case "Prebook":
@@ -72,7 +72,7 @@ export default function FeatureGrid({ items = [] }) {
   // Filter items based on role
   const filteredItems = displayItems.filter((item) => {
     if (user?.role === "user") {
-      return [ "My Purchases", "Prebook"].includes(item.title);
+      return [ "Purchase Now", "Prebook"].includes(item.title);
     } else if (user?.role === "farmer") {
       return [ "Crop Health", "Sell Produce", "Rent Tools"].includes(
         item.title
