@@ -9,3 +9,4 @@ transformers
 openai-whisper
 ffmpeg-python
 python-multipart
+dotenv
